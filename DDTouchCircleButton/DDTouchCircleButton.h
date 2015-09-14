@@ -10,6 +10,7 @@
 
 @protocol DDTouchCircleButtonDelegate <NSObject>
 
+- (BOOL)ddShouldStrokeAnimation;
 - (void)ddStrokeAnimationDidFinished;
 
 @end

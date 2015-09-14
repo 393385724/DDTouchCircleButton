@@ -17,6 +17,8 @@ NSString * const DDRollBackAnimation = @"rollBackAnimation";
 @property (nonatomic, strong) CAShapeLayer *circleProgressLayer;
 @property (nonatomic, strong) CALayer *imageLayer;
 
+@property (nonatomic, assign) BOOL shouldAnimation;
+
 @end
 
 @implementation DDTouchCircleButton
@@ -44,6 +46,13 @@ NSString * const DDRollBackAnimation = @"rollBackAnimation";
 #pragma mark - UIResponder
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event{
+    if (self.delegate && [self.delegate ddShouldStrokeAnimation]) {
+        self.shouldAnimation = [self.delegate ddShouldStrokeAnimation];
+    }
+    if (!self.shouldAnimation) {
+        return YES;
+    }
+    
     if (self.delegate && [self.delegate respondsToSelector:@selector(ddStrokeAnimationDidFinished)]) {
         [self removeTarget:self.delegate action:nil forControlEvents:UIControlEventAllEvents];
         [self strokeAnimation];
@@ -52,7 +61,7 @@ NSString * const DDRollBackAnimation = @"rollBackAnimation";
 }
 
 - (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(ddStrokeAnimationDidFinished)]) {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(ddStrokeAnimationDidFinished)] && self.shouldAnimation) {
         [self rollbackAnimation];
     }
 }
